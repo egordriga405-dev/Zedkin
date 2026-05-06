@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <title>Мои Заметки</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Главный экран: список заметок -->
+    <div id="main-screen" class="screen active">
+        <div class="header">
+            <h1>Мои Заметки</h1>
+            <button id="theme-toggle" class="icon-btn" aria-label="Сменить тему">🌓</button>
+        </div>
+        
+        <div id="notes-list" class="notes-list">
+            <!-- Заметки будут добавляться динамически -->
+            <div class="empty-state">
+                <p>У вас пока нет заметок</p>
+                <p class="hint">Нажмите кнопку ниже, чтобы создать первую</p>
+            </div>
+        </div>
+        
+        <button id="add-note-btn" class="fab" aria-label="Добавить заметку">+</button>
+    </div>
+
+    <!-- Экран создания/редактирования заметки -->
+    <div id="editor-screen" class="screen">
+        <div class="header">
+            <button id="back-btn" class="icon-btn" aria-label="Назад">←</button>
+            <h1 id="editor-title">Новая заметка</h1>
+            <button id="save-btn" class="icon-btn" aria-label="Сохранить">💾</button>
+        </div>
+        
+        <input type="text" id="note-title" class="note-input" placeholder="Заголовок заметки" maxlength="100">
+        <textarea id="note-content" class="note-input" placeholder="Текст заметки..." rows="10"></textarea>
+        
+        <div class="editor-actions">
+            <label class="color-picker-label">
+                Цвет заметки:
+                <select id="note-color" class="color-select">
+                    <option value="#FFD93D">Жёлтый</option>
+                    <option value="#6BCB77">Зелёный</option>
+                    <option value="#4D96FF">Синий</option>
+                    <option value="#FF6B6B">Красный</option>
+                    <option value="#9B59B6">Фиолетовый</option>
+                </select>
+            </label>
+        </div>
+        
+        <input type="hidden" id="note-id" value="">
+    </div>
+
+    <!-- Подключаем Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
