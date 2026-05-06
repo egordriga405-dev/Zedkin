@@ -1,0 +1,340 @@
+/* CSS Variables для тем Telegram */
+:root {
+    --tg-theme-bg: #ffffff;
+    --tg-theme-text: #000000;
+    --tg-theme-hint: #999999;
+    --tg-theme-link: #2481cc;
+    --tg-theme-button: #2481cc;
+    --tg-theme-button-text: #ffffff;
+    --tg-theme-secondary-bg: #f0f0f0;
+    
+    /* Дополнительные переменные */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --header-height: 60px;
+    --transition-speed: 0.3s;
+}
+
+/* Тёмная тема */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tg-theme-bg: #18222d;
+        --tg-theme-text: #ffffff;
+        --tg-theme-hint: #aaaaaa;
+        --tg-theme-link: #64b5f6;
+        --tg-theme-button: #4a90d9;
+        --tg-theme-button-text: #ffffff;
+        --tg-theme-secondary-bg: #1f2c3a;
+    }
+}
+
+/* Принудительная тёмная тема через класс */
+body.dark-theme {
+    --tg-theme-bg: #18222d;
+    --tg-theme-text: #ffffff;
+    --tg-theme-hint: #aaaaaa;
+    --tg-theme-link: #64b5f6;
+    --tg-theme-button: #4a90d9;
+    --tg-theme-button-text: #ffffff;
+    --tg-theme-secondary-bg: #1f2c3a;
+}
+
+/* Базовые стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: var(--tg-theme-bg);
+    color: var(--tg-theme-text);
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* Контейнер экранов */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--tg-theme-bg);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.screen.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.screen.slide-out-left {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.screen.slide-in-right {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+/* Шапка */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    height: var(--header-height);
+    background-color: var(--tg-theme-secondary-bg);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    flex-shrink: 0;
+}
+
+.header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--tg-theme-text);
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.icon-btn:active {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Список заметок */
+.notes-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--tg-theme-hint);
+}
+
+.empty-state p {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.empty-state .hint {
+    font-size: 14px;
+}
+
+/* Карточка заметки */
+.note-card {
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.note-card:active {
+    transform: scale(0.98);
+}
+
+.note-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+body.dark-theme .note-card h3 {
+    color: #fff;
+}
+
+.note-card p {
+    font-size: 14px;
+    color: #555;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+body.dark-theme .note-card p {
+    color: #ccc;
+}
+
+.note-card .date {
+    font-size: 12px;
+    color: var(--tg-theme-hint);
+    margin-top: 8px;
+}
+
+.note-card .delete-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+body.dark-theme .note-card .delete-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.note-card .delete-btn:active {
+    opacity: 1;
+}
+
+/* FAB кнопка */
+.fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--tg-theme-button);
+    color: var(--tg-theme-button-text);
+    font-size: 28px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+/* Экран редактора */
+#editor-screen {
+    z-index: 10;
+}
+
+.note-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    background-color: transparent;
+    color: var(--tg-theme-text);
+    font-size: 16px;
+    outline: none;
+    font-family: inherit;
+}
+
+#note-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+#note-content {
+    flex: 1;
+    resize: none;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.note-input::placeholder {
+    color: var(--tg-theme-hint);
+}
+
+.editor-actions {
+    padding: 16px;
+    flex-shrink: 0;
+}
+
+.color-picker-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--tg-theme-text);
+}
+
+.color-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    background-color: var(--tg-theme-secondary-bg);
+    color: var(--tg-theme-text);
+    font-size: 14px;
+}
+
+/* Анимации для уведомлений */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--tg-theme-text);
+    color: var(--tg-theme-bg);
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    z-index: 200;
+    animation: slideUp 0.3s ease-out;
+}
