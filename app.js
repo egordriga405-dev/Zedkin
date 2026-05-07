@@ -278,46 +278,48 @@ class GiftFarm {
         this.createInvoice(pkg);
     }
     
-    createInvoice(pkg) {
-        // Генерируем уникальный ID транзакции
-        const transactionId = `stars_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
-        // Сохраняем информацию оpending платеже
-        this.gameState.pendingInvoice = {
-            transactionId,
-            packageId: pkg.id,
+    // Заменяем метод createInvoice в вашем app.js
+createInvoice(pkg) {
+    // Генерируем уникальный ID транзакции
+    const transactionId = `stars_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Сохраняем информацию о pending платеже
+    this.gameState.pendingInvoice = {
+        transactionId,
+        packageId: pkg.id,
+        amount: pkg.amount,
+        timestamp: Date.now()
+    };
+
+    console.log(`💎 Открываем счёт на ${pkg.amount} Звёзд...`);
+    
+    // Выставляем счёт через Telegram API
+    this.tg.openInvoice({
+        title: `Покупка ${pkg.amount} Stars`,
+        description: `Звёзды для Gift Farm. Можно использовать для покупки бустеров и наборов подарков.`,
+        currency: 'XTR', // Специальный код для Telegram Stars [citation:7]
+        prices: [{
+            label: `${pkg.amount} Telegram Stars`,
+            amount: pkg.price * 100 // Цена в копейках/центах (для отображения в UI Telegram)
+        }],
+        payload: JSON.stringify({
+            type: 'stars_purchase',
+            transaction_id: transactionId,
+            package_id: pkg.id,
             amount: pkg.amount,
-            timestamp: Date.now()
-        };
-        
-        // Открываем счёт в Telegram
-        this.tg.openInvoice({
-            title: `Покупка ${pkg.amount} Stars`,
-            description: `Звёзды для Gift Farm. Можно использовать для покупки бустеров и наборов подарков.`,
-            currency: pkg.currency,
-            prices: [{
-                label: `${pkg.amount} Telegram Stars`,
-                amount: pkg.price * 100 // В копейках/центах
-            }],
-            payload: JSON.stringify({
-                type: 'stars_purchase',
-                transaction_id: transactionId,
-                package_id: pkg.id,
-                amount: pkg.amount,
-                user_id: this.tg.initDataUnsafe?.user?.id || 'anonymous'
-            }),
-            provider_token: '', // Оставляем пустым для Stars
-            need_name: false,
-            need_phone_number: false,
-            need_email: false,
-            need_shipping_address: false,
-            send_phone_number_to_provider: false,
-            send_email_to_provider: false,
-            is_flexible: false
-        });
-        
-        console.log('💎 Счёт открыт:', transactionId);
-    }
+            user_id: this.tg.initDataUnsafe?.user?.id || 'anonymous'
+        }),
+        // Для Звёзд provider_token оставляем пустым [citation:7]
+        provider_token: '',
+        need_name: false,
+        need_phone_number: false,
+        need_email: false,
+        need_shipping_address: false,
+        send_phone_number_to_provider: false,
+        send_email_to_provider: false,
+        is_flexible: false
+    });
+}
     
     // ============================================
     // ОБРАБОТКА УСПЕШНОГО ПЛАТЕЖА
