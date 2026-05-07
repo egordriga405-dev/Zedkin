@@ -2,58 +2,188 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="format-detection" content="telephone=no">
-    <title>Мои Заметки</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a0a1a">
+    <title>🎁 Gift Farm - Telegram Clicker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Главный экран: список заметок -->
+    
+    <!-- ============================================ -->
+    <!-- ГЛАВНЫЙ ЭКРАН (Кликер)                       -->
+    <!-- ============================================ -->
     <div id="main-screen" class="screen active">
-        <div class="header">
-            <h1>Мои Заметки</h1>
-            <button id="theme-toggle" class="icon-btn" aria-label="Сменить тему">🌓</button>
-        </div>
         
-        <div id="notes-list" class="notes-list">
-            <!-- Заметки будут добавляться динамически -->
-            <div class="empty-state">
-                <p>У вас пока нет заметок</p>
-                <p class="hint">Нажмите кнопку ниже, чтобы создать первую</p>
+        <!-- Верхняя панель с ресурсами -->
+        <div class="top-bar">
+            <div class="resource" id="parts-resource">
+                <span class="icon">⚡</span>
+                <span class="value" id="parts-count">0</span>
+                <span class="label">Частей</span>
+            </div>
+            <div class="resource stars" id="stars-resource">
+                <span class="icon">⭐</span>
+                <span class="value" id="stars-count">0</span>
+                <span class="label">Stars</span>
+            </div>
+            <div class="resource per-second" id="pps-resource">
+                <span class="icon">⚙️</span>
+                <span class="value" id="pps-count">0</span>
+                <span class="label">/сек</span>
             </div>
         </div>
         
-        <button id="add-note-btn" class="fab" aria-label="Добавить заметку">+</button>
+        <!-- Зона клика -->
+        <div class="click-zone" id="click-zone">
+            <div class="click-counter" id="click-counter">Сессия: 0 кликов</div>
+            
+            <div class="gift-container" id="gift-container">
+                <div class="particles-container" id="particles-container"></div>
+                <div class="gift-emoji" id="gift-emoji">🎁</div>
+                <div class="click-effect" id="click-effect">+1</div>
+                <div class="glow-effect"></div>
+            </div>
+            
+            <div class="click-hint">ТАПАЙ!</div>
+        </div>
+        
+        <!-- Шкала прогресса -->
+        <div class="gift-progress">
+            <div class="progress-label">
+                <span>До случайного подарка</span>
+                <span id="progress-text">0 / 100</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <!-- Нижняя навигация -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-screen="main">
+                <span class="nav-icon">🏠</span>
+                <span>Ферма</span>
+            </button>
+            <button class="nav-btn" data-screen="upgrades">
+                <span class="nav-icon">🏭</span>
+                <span>Апгрейды</span>
+            </button>
+            <button class="nav-btn" data-screen="inventory">
+                <span class="nav-icon">🎒</span>
+                <span>Инвентарь</span>
+                <span class="badge" id="inventory-badge" style="display:none">0</span>
+            </button>
+            <button class="nav-btn" data-screen="shop">
+                <span class="nav-icon">🛒</span>
+                <span>Магазин</span>
+            </button>
+        </div>
     </div>
-
-    <!-- Экран создания/редактирования заметки -->
-    <div id="editor-screen" class="screen">
+    
+    <!-- ============================================ -->
+    <!-- ЭКРАН АПГРЕЙДОВ                              -->
+    <!-- ============================================ -->
+    <div id="upgrades-screen" class="screen">
         <div class="header">
-            <button id="back-btn" class="icon-btn" aria-label="Назад">←</button>
-            <h1 id="editor-title">Новая заметка</h1>
-            <button id="save-btn" class="icon-btn" aria-label="Сохранить">💾</button>
+            <button class="back-btn" data-screen="main">←</button>
+            <h1>🏭 Улучшения фермы</h1>
+            <div style="width:40px"></div>
         </div>
-        
-        <input type="text" id="note-title" class="note-input" placeholder="Заголовок заметки" maxlength="100">
-        <textarea id="note-content" class="note-input" placeholder="Текст заметки..." rows="10"></textarea>
-        
-        <div class="editor-actions">
-            <label class="color-picker-label">
-                Цвет заметки:
-                <select id="note-color" class="color-select">
-                    <option value="#FFD93D">Жёлтый</option>
-                    <option value="#6BCB77">Зелёный</option>
-                    <option value="#4D96FF">Синий</option>
-                    <option value="#FF6B6B">Красный</option>
-                    <option value="#9B59B6">Фиолетовый</option>
-                </select>
-            </label>
+        <div class="upgrades-list" id="upgrades-list">
+            <!-- Заполняется динамически из JS -->
         </div>
-        
-        <input type="hidden" id="note-id" value="">
     </div>
-
-    <!-- Подключаем Telegram WebApp API -->
+    
+    <!-- ============================================ -->
+    <!-- ЭКРАН ИНВЕНТАРЯ                              -->
+    <!-- ============================================ -->
+    <div id="inventory-screen" class="screen">
+        <div class="header">
+            <button class="back-btn" data-screen="main">←</button>
+            <h1>🎒 Коллекция подарков</h1>
+            <div style="width:40px"></div>
+        </div>
+        
+        <!-- Фильтры по редкости -->
+        <div class="rarity-filters">
+            <button class="rarity-btn active" data-rarity="all">Все</button>
+            <button class="rarity-btn" data-rarity="common">⚪ Обычные</button>
+            <button class="rarity-btn" data-rarity="uncommon">🟢 Необычные</button>
+            <button class="rarity-btn" data-rarity="rare">🔵 Редкие</button>
+            <button class="rarity-btn" data-rarity="epic">🟣 Эпические</button>
+            <button class="rarity-btn" data-rarity="legendary">🟡 Легендарные</button>
+            <button class="rarity-btn" data-rarity="mythic">🔴 Мифические</button>
+        </div>
+        
+        <!-- Сетка подарков -->
+        <div class="gifts-grid" id="gifts-grid">
+            <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--tg-theme-hint)">
+                📦 Пока нет подарков<br>Кликайте на ферме, чтобы создавать их!
+            </div>
+        </div>
+        
+        <!-- Мерж-зона -->
+        <div class="merge-zone">
+            <div class="merge-hint">Выберите 3 одинаковых подарка для объединения</div>
+            <div class="merge-slots" id="merge-slots">
+                <div class="merge-slot empty" data-slot="0"></div>
+                <div class="merge-slot empty" data-slot="1"></div>
+                <div class="merge-slot empty" data-slot="2"></div>
+            </div>
+            <button class="merge-btn" id="merge-btn" disabled>🔨 Выберите 3 одинаковых подарка</button>
+        </div>
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- ЭКРАН МАГАЗИНА                               -->
+    <!-- ============================================ -->
+    <div id="shop-screen" class="screen">
+        <div class="header">
+            <button class="back-btn" data-screen="main">←</button>
+            <h1>🛒 Магазин</h1>
+            <div style="width:40px"></div>
+        </div>
+        
+        <!-- Баланс Stars -->
+        <div class="stars-balance">
+            <span>Ваш баланс: ⭐ <strong id="shop-balance">0</strong></span>
+            <button class="buy-stars-btn" id="buy-stars-btn">💎 Купить Stars</button>
+        </div>
+        
+        <!-- Список товаров -->
+        <div class="shop-items" id="shop-items">
+            <!-- Заполняется динамически из JS -->
+        </div>
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- МОДАЛЬНОЕ ОКНО ПОДАРКА                       -->
+    <!-- ============================================ -->
+    <div class="modal" id="gift-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">✕</button>
+            <div class="gift-reveal" id="gift-reveal">
+                <div class="gift-display" id="gift-display">🎁</div>
+                <div class="gift-info">
+                    <h2 id="gift-name">Подарок</h2>
+                    <div class="gift-rarity-tag common" id="gift-rarity-tag">Обычный</div>
+                    <p style="margin-top:8px;font-size:13px;color:var(--tg-theme-hint)" id="gift-desc"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- TOAST-КОНТЕЙНЕР                              -->
+    <!-- ============================================ -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- ============================================ -->
+    <!-- СКРИПТЫ                                      -->
+    <!-- ============================================ -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="app.js"></script>
 </body>
